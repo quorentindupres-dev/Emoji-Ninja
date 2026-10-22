@@ -62,9 +62,13 @@ struct FastEmojiButton: View {
     .frame(width: buttonSize, height: buttonSize)
   }
 
+  private var cellCornerRadius: CGFloat {
+    SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10)
+  }
+
   @ViewBuilder
   private var backgroundView: some View {
-    RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
+    RoundedRectangle(cornerRadius: cellCornerRadius, style: .continuous)
       .fill(
         isSelected
           ? theme.colors.surfaceElevated
@@ -75,7 +79,7 @@ struct FastEmojiButton: View {
   @ViewBuilder
   private var overlayView: some View {
     if isSelected || isHovered {
-      RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
+      RoundedRectangle(cornerRadius: cellCornerRadius, style: .continuous)
         .stroke(borderColor, lineWidth: isSelected ? 1.5 : 1)
     }
   }

@@ -35679,7 +35679,9 @@
       "deploy",
       "space",
       "rockets",
-      "travel"
+      "travel",
+      "release",
+      "fusee"
     ],
     "unicode": "🚀"
   },
@@ -37999,7 +38001,9 @@
       "slay",
       "sport",
       "victory",
-      "winning"
+      "winning",
+      "goal",
+      "victoire"
     ],
     "unicode": "🏆️"
   },
@@ -38571,7 +38575,13 @@
       "eye",
       "hit",
       "bullseye",
-      "direct"
+      "direct",
+      "goal",
+      "win",
+      "objective",
+      "focus",
+      "cible",
+      "objectif"
     ],
     "unicode": "🎯"
   },

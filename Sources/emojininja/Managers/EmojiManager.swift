@@ -85,6 +85,7 @@ class EmojiManager: ObservableObject {
     window.isOpaque = false
     window.backgroundColor = .clear
     window.hasShadow = true
+    window.sharingType = .readOnly
     window.isMovableByWindowBackground = true
     window.standardWindowButton(.closeButton)?.isHidden = true
     window.standardWindowButton(.miniaturizeButton)?.isHidden = true

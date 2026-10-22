@@ -45,6 +45,7 @@ struct EmojiPickerView: View {
           }
 
           Divider()
+            .overlay(theme.colors.border.primary)
 
           // Emoji Content
           ScrollViewReader { proxy in
@@ -93,21 +94,25 @@ struct EmojiPickerView: View {
             }
 
             Divider()
-              .overlay(theme.colors.border.secondary)
+              .overlay(theme.colors.border.primary)
 
             // Raycast-style Multi-Keyword Meaning Footer Bar
             EmojiFooterBar(emoji: viewModel.getCurrentEmoji())
           }
           .frame(maxWidth: .infinity, maxHeight: .infinity)
           .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-              .fill(theme.colors.background)
+            SurfaceCardChrome(
+              cornerRadius: 20,
+              fill: "#141518",
+              fillOpacity: 0.94,
+              washHex: "#2DD4BF",
+              washOpacity: 0.14,
+              strokeHex: "#FFFFFF",
+              strokeOpacity: 0.08,
+              useGlass: true
+            )
           )
-          .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-          .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-              .stroke(theme.colors.border.primary, lineWidth: 1)
-          )
+          .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
           .coordinateSpace(name: "emojiPicker")
           .environmentObject(tooltipManager)
 
@@ -177,7 +182,7 @@ struct EmojiPickerView: View {
                   .padding(.horizontal, 6)
                   .padding(.vertical, 2)
                   .background(
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: theme.cornerRadius.small, style: .continuous)
                       .fill(theme.colors.surfaceElevated)
                   )
               }

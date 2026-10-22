@@ -95,7 +95,7 @@ struct SearchBar: View {
       .searchBarStyle(isFocused: isSearchFocused)
     }
     .frame(height: 50)
-    .background(theme.colors.background)
+    .background(Color.clear)
     .onAppear {
       DispatchQueue.main.async {
         isSearchFocused = true

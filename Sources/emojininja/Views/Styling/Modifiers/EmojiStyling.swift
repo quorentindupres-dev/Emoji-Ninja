@@ -20,17 +20,21 @@ struct EmojiButtonStyle: ButtonStyle {
   let isHovered: Bool
   let size: CGFloat
 
+  private var cellCornerRadius: CGFloat {
+    SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10)
+  }
+
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .font(EmojiStyling.emojiFont(size: size, theme: theme))
       .frame(width: size, height: size)
       .background(
-        RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
+        RoundedRectangle(cornerRadius: cellCornerRadius, style: .continuous)
           .fill(theme.colors.surface)
       )
       .overlay(
-        RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
-          .stroke(borderColor, lineWidth: 2)
+        RoundedRectangle(cornerRadius: cellCornerRadius, style: .continuous)
+          .stroke(borderColor, lineWidth: 1.5)
       )
       .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
       .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
@@ -52,17 +56,21 @@ struct CategoryPillStyle: ButtonStyle {
   @Environment(\.theme) private var theme
   let isSelected: Bool
 
+  private var pillCornerRadius: CGFloat {
+    SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10)
+  }
+
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .padding(.horizontal, isSelected ? 10 : 8)
       .padding(.vertical, 5)
       .background(
-        RoundedRectangle(cornerRadius: 8)
+        RoundedRectangle(cornerRadius: pillCornerRadius, style: .continuous)
           .fill(backgroundColor)
       )
       .overlay(
-        RoundedRectangle(cornerRadius: 8)
-          .stroke(isSelected ? theme.colors.border.selected.opacity(0.6) : theme.colors.border.secondary, lineWidth: 1)
+        RoundedRectangle(cornerRadius: pillCornerRadius, style: .continuous)
+          .stroke(isSelected ? theme.colors.border.selected.opacity(0.75) : theme.colors.border.primary, lineWidth: 1)
       )
       .foregroundColor(textColor)
       .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
@@ -70,7 +78,7 @@ struct CategoryPillStyle: ButtonStyle {
   }
 
   private var backgroundColor: Color {
-    isSelected ? theme.colors.surfaceElevated : theme.colors.surface.opacity(0.5)
+    isSelected ? theme.colors.surfaceElevated : theme.colors.surface
   }
 
   private var textColor: Color {
@@ -96,15 +104,19 @@ struct SearchBarStyle: ViewModifier {
 struct SkinToneSelectorStyle: ViewModifier {
   @Environment(\.theme) private var theme
 
+  private var selectorCornerRadius: CGFloat {
+    SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10)
+  }
+
   func body(content: Content) -> some View {
     content
       .font(theme.typography.emoji.small)
       .frame(width: 32, height: 32)
       .background(
-        RoundedRectangle(cornerRadius: 8)
+        RoundedRectangle(cornerRadius: selectorCornerRadius, style: .continuous)
           .fill(theme.colors.surfaceElevated)
           .overlay(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: selectorCornerRadius, style: .continuous)
               .stroke(theme.colors.border.primary, lineWidth: 1)
           )
       )
@@ -186,19 +198,19 @@ struct TooltipStyle: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .font(.caption)
+      .font(theme.typography.caption)
       .foregroundColor(theme.colors.text.primary)
       .padding(.horizontal, 10)
       .padding(.vertical, 6)
       .background(
-        RoundedRectangle(cornerRadius: 6)
+        RoundedRectangle(cornerRadius: theme.cornerRadius.small, style: .continuous)
           .fill(theme.colors.background)
       )
       .overlay(
-        RoundedRectangle(cornerRadius: 6)
-          .stroke(theme.colors.border.secondary.opacity(0.3), lineWidth: 0.5)
+        RoundedRectangle(cornerRadius: theme.cornerRadius.small, style: .continuous)
+          .stroke(theme.colors.border.primary, lineWidth: 1)
       )
-      .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+      .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 2)
   }
 }
 

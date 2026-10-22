@@ -100,42 +100,42 @@ struct ShadowStyle {
 // MARK: - Dark Theme Implementation
 struct DarkTheme: Theme {
   let colors = ColorScheme(
-    background: Color(red: 22 / 255, green: 22 / 255, blue: 26 / 255),
-    surface: Color(red: 32 / 255, green: 32 / 255, blue: 38 / 255),
-    surfaceElevated: Color(red: 44 / 255, green: 45 / 255, blue: 54 / 255),
-    primary: Color.white,
-    secondary: Color(red: 165 / 255, green: 168 / 255, blue: 180 / 255),
-    accent: Color(red: 99 / 255, green: 102 / 255, blue: 241 / 255),
+    background: surfaceColor("#141518"),
+    surface: surfaceColor("#2B2D31").opacity(0.55),
+    surfaceElevated: surfaceColor("#2B2D31"),
+    primary: surfaceColor("#F5F6F8"),
+    secondary: surfaceColor("#B9BDC4"),
+    accent: surfaceColor("#2DD4BF"),
     text: TextColors(
-      primary: Color(red: 244 / 255, green: 244 / 255, blue: 246 / 255),
-      secondary: Color(red: 161 / 255, green: 161 / 255, blue: 170 / 255),
-      tertiary: Color(red: 113 / 255, green: 113 / 255, blue: 122 / 255),
-      inverse: Color.white,
-      disabled: Color(red: 82 / 255, green: 82 / 255, blue: 91 / 255)
+      primary: surfaceColor("#F5F6F8"),
+      secondary: surfaceColor("#B9BDC4"),
+      tertiary: Color.white.opacity(0.5),
+      inverse: surfaceColor("#141518"),
+      disabled: surfaceColor("#8E939C").opacity(0.6)
     ),
     border: BorderColors(
-      primary: Color.white.opacity(0.11),
-      secondary: Color.white.opacity(0.07),
-      selected: Color(red: 129 / 255, green: 140 / 255, blue: 248 / 255),
-      hover: Color.white.opacity(0.18),
-      focus: Color(red: 99 / 255, green: 102 / 255, blue: 241 / 255)
+      primary: Color.white.opacity(0.08),
+      secondary: Color.white.opacity(0.06),
+      selected: surfaceColor("#2DD4BF"),
+      hover: Color.white.opacity(0.16),
+      focus: surfaceColor("#2DD4BF")
     ),
     semantic: SemanticColors(
-      success: Color(red: 52 / 255, green: 199 / 255, blue: 89 / 255),
-      warning: Color(red: 255 / 255, green: 204 / 255, blue: 0 / 255),
-      error: Color(red: 255 / 255, green: 59 / 255, blue: 48 / 255),
-      info: Color(red: 0 / 255, green: 122 / 255, blue: 255 / 255)
+      success: surfaceColor("#2DD4BF"),
+      warning: surfaceColor("#F29B38"),
+      error: surfaceColor("#F87171"),
+      info: surfaceColor("#2DD4BF")
     )
   )
 
   let typography = Typography(
     largeTitle: .system(size: 26, weight: .bold),
-    title: .system(size: 16, weight: .medium),
-    headline: .system(size: 12, weight: .semibold),
-    subheadline: .system(size: 13, weight: .medium),
-    body: .system(size: 14, weight: .regular),
-    caption: .system(size: 11.5, weight: .medium),
-    caption2: .system(size: 10.5, weight: .medium),
+    title: .system(size: 15, weight: .semibold),
+    headline: .system(size: 13, weight: .semibold),
+    subheadline: .system(size: 12, weight: .semibold),
+    body: .system(size: 13, weight: .regular),
+    caption: .system(size: 11, weight: .regular),
+    caption2: .system(size: 10.5, weight: .semibold),
     emoji: EmojiTypography(
       small: .system(size: 15),
       medium: .system(size: 20),
@@ -154,10 +154,10 @@ struct DarkTheme: Theme {
   )
 
   let cornerRadius = CornerRadius(
-    small: 4,
-    medium: 8,
-    large: 12,
-    xl: 16,
+    small: SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 14),
+    medium: SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10),
+    large: 14,
+    xl: SurfaceStyle.floating.cornerRadius,
     pill: 999
   )
 
@@ -191,7 +191,7 @@ struct LightTheme: Theme {
     surfaceElevated: Color.white,
     primary: Color.black,
     secondary: Color(red: 100 / 255, green: 100 / 255, blue: 100 / 255),
-    accent: Color.accentColor,
+    accent: surfaceColor("#2DD4BF"),
     text: TextColors(
       primary: Color.black,
       secondary: Color(red: 100 / 255, green: 100 / 255, blue: 100 / 255),
@@ -202,26 +202,26 @@ struct LightTheme: Theme {
     border: BorderColors(
       primary: Color(red: 200 / 255, green: 200 / 255, blue: 200 / 255),
       secondary: Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255),
-      selected: Color(red: 0 / 255, green: 122 / 255, blue: 255 / 255),
+      selected: surfaceColor("#2DD4BF"),
       hover: Color(red: 160 / 255, green: 160 / 255, blue: 160 / 255),
-      focus: Color.accentColor
+      focus: surfaceColor("#2DD4BF")
     ),
     semantic: SemanticColors(
-      success: Color(red: 52 / 255, green: 199 / 255, blue: 89 / 255),
-      warning: Color(red: 255 / 255, green: 149 / 255, blue: 0 / 255),
-      error: Color(red: 255 / 255, green: 59 / 255, blue: 48 / 255),
-      info: Color(red: 0 / 255, green: 122 / 255, blue: 255 / 255)
+      success: surfaceColor("#2DD4BF"),
+      warning: surfaceColor("#F29B38"),
+      error: surfaceColor("#F87171"),
+      info: surfaceColor("#2DD4BF")
     )
   )
 
   let typography = Typography(
     largeTitle: .system(size: 26, weight: .bold),
-    title: .system(size: 16, weight: .medium),
-    headline: .system(size: 12, weight: .semibold),
-    subheadline: .system(size: 13, weight: .medium),
-    body: .system(size: 14, weight: .regular),
-    caption: .system(size: 11.5, weight: .medium),
-    caption2: .system(size: 10.5, weight: .medium),
+    title: .system(size: 15, weight: .semibold),
+    headline: .system(size: 13, weight: .semibold),
+    subheadline: .system(size: 12, weight: .semibold),
+    body: .system(size: 13, weight: .regular),
+    caption: .system(size: 11, weight: .regular),
+    caption2: .system(size: 10.5, weight: .semibold),
     emoji: EmojiTypography(
       small: .system(size: 15),
       medium: .system(size: 20),
@@ -240,10 +240,10 @@ struct LightTheme: Theme {
   )
 
   let cornerRadius = CornerRadius(
-    small: 4,
-    medium: 8,
-    large: 12,
-    xl: 16,
+    small: SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 14),
+    medium: SurfaceStyle.concentricInnerRadius(outerRadius: 20, padding: 10),
+    large: 14,
+    xl: SurfaceStyle.floating.cornerRadius,
     pill: 999
   )
 

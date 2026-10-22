@@ -41283,14 +41283,18 @@
         "deploy",
         "space",
         "rockets",
-        "travel"
+        "travel",
+        "release",
+        "fusee"
       ],
       "tokens" : [
         "deploy",
         "fly",
+        "fusee",
         "launch",
         "nasa",
         "outer",
+        "release",
         "rocket",
         "rockets",
         "ship",
@@ -45619,7 +45623,9 @@
         "slay",
         "sport",
         "victory",
-        "winning"
+        "winning",
+        "goal",
+        "victoire"
       ],
       "tokens" : [
         "award",
@@ -45629,12 +45635,14 @@
         "champs",
         "contest",
         "ftw",
+        "goal",
         "place",
         "prize",
         "slay",
         "sport",
         "trophee",
         "trophy",
+        "victoire",
         "victory",
         "win",
         "winner",
@@ -46686,7 +46694,13 @@
         "eye",
         "hit",
         "bullseye",
-        "direct"
+        "direct",
+        "goal",
+        "win",
+        "objective",
+        "focus",
+        "cible",
+        "objectif"
       ],
       "tokens" : [
         "activity",
@@ -46694,15 +46708,21 @@
         "bar",
         "bull",
         "bullseye",
+        "cible",
         "dart",
         "darts",
         "direct",
         "entertainment",
         "eye",
+        "focus",
         "game",
+        "goal",
         "hit",
+        "objectif",
+        "objective",
         "play",
-        "target"
+        "target",
+        "win"
       ],
       "unicode" : "🎯"
     },
@@ -76007,6 +76027,6 @@
       "unicode" : "🏴󠁧󠁢󠁷󠁬󠁳󠁿"
     }
   ],
-  "generatedAt" : "2026-10-22T08:29:30Z",
+  "generatedAt" : "2026-10-22T08:58:17Z",
   "version" : 1
 }

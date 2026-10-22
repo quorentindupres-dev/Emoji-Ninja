@@ -215,4 +215,50 @@ struct EmojiSearchKitTests {
       #expect(results.count >= 0)
     }
   }
+
+  @Test @MainActor func multiKeywordAndFrenchFindabilityBenchmark() {
+    let searchKit = EmojiDataManager.searchKit
+
+    let cases: [(query: String, expected: Set<String>)] = [
+      // Multi-keyword meaning queries (15)
+      ("deploy ship", ["🚀", "🚢"]),
+      ("money fly", ["💸"]),
+      ("smart brain", ["🧠"]),
+      ("happy cry", ["😂", "🥹", "🥲"]),
+      ("red circle", ["🔴"]),
+      ("green check", ["✅"]),
+      ("launch space", ["🚀"]),
+      ("hot flame", ["🔥"]),
+      ("goal win", ["🎯", "🏆", "🥅"]),
+      ("weight gym", ["🏋️", "🏋️‍♂️", "🏋️‍♀️"]),
+      ("coffee drink", ["☕"]),
+      ("sad tear", ["😢", "😭", "😥"]),
+      ("king crown", ["👑", "🤴"]),
+      ("magic wizard", ["🧙", "🧙‍♂️", "🪄"]),
+      ("lock key", ["🔐", "🔒", "🔑"]),
+      // French / custom shortcut queries (10)
+      ("soldat", ["🫡", "🪖"]),
+      ("deter", ["😤", "💪"]),
+      ("metric", ["📊", "📈"]),
+      ("ads", ["📣", "📢"]),
+      ("eclair", ["⚡"]),
+      ("rire", ["😂", "🤣"]),
+      ("boum", ["💥", "🤯"]),
+      ("trophee", ["🏆"]),
+      ("medail", ["🥇", "🏅", "🎖️"]),
+      ("orga", ["📋", "🗂️", "📅"]),
+      // Number keycaps (3)
+      ("1", ["1️⃣", "🥇"]),
+      ("2", ["2️⃣", "🥈"]),
+      ("9", ["9️⃣"])
+    ]
+
+    for item in cases {
+      let results = searchKit.search(query: item.query, limit: 5)
+      let top3 = Array(results.prefix(3)).map { $0.emoji.unicode.replacingOccurrences(of: "\u{FE0F}", with: "") }
+      let expectedNormalized = Set(item.expected.map { $0.replacingOccurrences(of: "\u{FE0F}", with: "") })
+      let matchedInTop3 = top3.contains { expectedNormalized.contains($0) }
+      #expect(matchedInTop3, "Expected one of \(item.expected) in top 3 for '\(item.query)', got \(top3)")
+    }
+  }
 }
