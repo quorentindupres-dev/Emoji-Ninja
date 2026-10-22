@@ -21,8 +21,11 @@ class AppState: ObservableObject {
   private let hasSeenAccessibilityDialogKey = "hasSeenAccessibilityDialog"
 
   init() {
-    // Check accessibility permissions on startup
-    _ = checkAccessibilityPermissions()
+    // Check accessibility permissions on startup and prompt if not yet trusted
+    if !checkAccessibilityPermissions() {
+      let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+      _ = AXIsProcessTrustedWithOptions(options)
+    }
 
     // Start periodic permission checking
     startPeriodicPermissionChecking()
