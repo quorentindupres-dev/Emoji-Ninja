@@ -4,6 +4,11 @@ import Carbon
 import SwiftUI
 import ninjalib
 
+final class KeyableFloatingPanel: NSPanel {
+  override var canBecomeKey: Bool { true }
+  override var canBecomeMain: Bool { true }
+}
+
 @MainActor
 class EmojiManager: ObservableObject {
   @Published var isPickerShowing = false
@@ -15,6 +20,7 @@ class EmojiManager: ObservableObject {
   private nonisolated(unsafe) var hotKeyHandlerRef: EventHandlerRef?
   private nonisolated(unsafe) var themeObserver: AnyCancellable?
   private var previousApp: NSRunningApplication?
+  private var savedQuartzCursorLocation: CGPoint?
   private var lastScreenFrame: CGRect?
 
   init() {
@@ -23,8 +29,18 @@ class EmojiManager: ObservableObject {
   }
 
   func showPicker() {
-    // Store the currently focused app before showing picker
-    previousApp = NSWorkspace.shared.frontmostApplication
+    if let window = pickerWindow, window.isVisible {
+      hidePicker(restoreMouse: true)
+      return
+    }
+
+    // Store the currently focused app and mouse position before showing picker
+    if let frontmost = NSWorkspace.shared.frontmostApplication,
+      frontmost.bundleIdentifier != Bundle.main.bundleIdentifier
+    {
+      previousApp = frontmost
+    }
+    savedQuartzCursorLocation = CGEvent(source: nil)?.location
 
     // Get current screen
     let currentScreen = getCurrentScreen()
@@ -41,11 +57,6 @@ class EmojiManager: ObservableObject {
 
     guard let window = pickerWindow else { return }
 
-    if window.isVisible {
-      hidePicker()
-      return
-    }
-
     positionWindowAtCursor(window)
     window.makeKeyAndOrderFront(nil)
     NSApp.activate(ignoringOtherApps: true)
@@ -55,9 +66,18 @@ class EmojiManager: ObservableObject {
     isPickerShowing = true
   }
 
-  func hidePicker() {
-    pickerWindow?.close()
+  func hidePicker(restoreMouse: Bool = true) {
+    pickerWindow?.orderOut(nil)
     isPickerShowing = false
+
+    if restoreMouse, let savedPoint = savedQuartzCursorLocation {
+      CGWarpMouseCursorPosition(savedPoint)
+      CGAssociateMouseAndMouseCursorPosition(1)
+    }
+
+    if let app = previousApp {
+      app.activate(options: [])
+    }
   }
 
   private func createPickerWindow() {
@@ -72,9 +92,9 @@ class EmojiManager: ObservableObject {
     )
     .themedEnvironment(ThemeManager.shared)
 
-    let window = NSWindow(
+    let window = KeyableFloatingPanel(
       contentRect: NSRect(origin: .zero, size: windowSize),
-      styleMask: [.titled, .fullSizeContentView],
+      styleMask: [.titled, .fullSizeContentView, .nonactivatingPanel],
       backing: .buffered,
       defer: false
     )
@@ -82,6 +102,8 @@ class EmojiManager: ObservableObject {
     window.title = "Emoji Ninja \(BuildVersion.display)"
     window.titleVisibility = .hidden
     window.titlebarAppearsTransparent = true
+    window.isFloatingPanel = true
+    window.becomesKeyOnlyIfNeeded = false
     window.isOpaque = false
     window.backgroundColor = .clear
     window.hasShadow = true
@@ -152,15 +174,15 @@ class EmojiManager: ObservableObject {
   private func setupWindowObservers() {
     guard let window = pickerWindow else { return }
 
-    // Close window when it loses focus
+    // Close window when it loses focus (because user clicked outside), without warping mouse back
     NotificationCenter.default.addObserver(
       forName: NSWindow.didResignKeyNotification,
       object: window,
       queue: .main
     ) { [weak self] _ in
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-        if let window = self?.pickerWindow, !window.isKeyWindow {
-          self?.hidePicker()
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+        if let window = self?.pickerWindow, window.isVisible, !window.isKeyWindow {
+          self?.hidePicker(restoreMouse: false)
         }
       }
     }
@@ -169,9 +191,13 @@ class EmojiManager: ObservableObject {
   private func handleEmojiSelection(_ emojiData: EmojibaseEmoji) {
     let emojiWithSkinTone = emojiData.withSkinTone(selectedSkinTone)
     FrequentlyUsedEmojiManager.shared.recordEmojiUsage(emojiWithSkinTone)
-    hidePicker()
+    copyToClipboard(emojiWithSkinTone)
 
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+    // Hide picker, warp mouse back to saved location, and activate previousApp immediately
+    hidePicker(restoreMouse: true)
+
+    // Wait 75ms for previousApp to regain key focus before posting keyDown + keyUp CGEvents
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.075) {
       self.typeEmojiDirectly(emojiWithSkinTone)
     }
 
@@ -179,17 +205,12 @@ class EmojiManager: ObservableObject {
   }
 
   private func typeEmojiDirectly(_ emoji: String) {
-    // Check if we have accessibility permissions
+    // Check if we have accessibility permissions; prompt once if invalidated after binary update
     if !AXIsProcessTrusted() {
-      print("❌ No accessibility permissions. Cannot type emoji.")
-      copyToClipboard(emoji)
+      let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
+      _ = AXIsProcessTrustedWithOptions(options)
+      print("❌ No accessibility permissions. Copied emoji to clipboard and prompted for Accessibility.")
       return
-    }
-
-    // Restore focus to previous app first
-    if let app = previousApp {
-      app.activate(options: [])
-      print("🔄 Restored focus to \(app.localizedName ?? "Unknown")")
     }
 
     self.typeUnicodeDirectly(emoji)
@@ -201,12 +222,16 @@ class EmojiManager: ObservableObject {
       return
     }
 
-    // Convert emoji to UTF-16 and type it directly
+    // Convert emoji to UTF-16 and post both keyDown and keyUp events
     let utf16 = Array(emoji.utf16)
 
-    if let event = CGEvent(keyboardEventSource: source, virtualKey: 0, keyDown: true) {
-      event.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: utf16)
-      event.post(tap: .cgSessionEventTap)
+    if let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 0, keyDown: true),
+      let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 0, keyDown: false)
+    {
+      keyDown.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: utf16)
+      keyUp.keyboardSetUnicodeString(stringLength: utf16.count, unicodeString: utf16)
+      keyDown.post(tap: .cgAnnotatedSessionEventTap)
+      keyUp.post(tap: .cgAnnotatedSessionEventTap)
     }
 
     print("⌨️ Typed emoji directly: \(emoji)")
