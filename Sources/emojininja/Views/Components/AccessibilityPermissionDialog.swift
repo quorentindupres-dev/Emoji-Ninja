@@ -125,6 +125,7 @@ struct PermissionBenefitRow: View {
   }
 }
 
+#if canImport(PreviewsMacros)
 #Preview {
   AccessibilityPermissionDialog(
     onGrantPermission: { print("Grant permission") },
@@ -132,3 +133,4 @@ struct PermissionBenefitRow: View {
   )
   .themedEnvironment(ThemeManager.shared)
 }
+#endif

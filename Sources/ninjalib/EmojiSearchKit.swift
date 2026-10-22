@@ -98,9 +98,39 @@ public class EmojiSearchKit {
       score += 4_000
     }
 
+    var matchedTokenCount = 0
     for token in queryTokens {
-      if entry.tokens.contains(token) {
-        score += 1_500
+      var tokenMatched = false
+      if entry.label == token || entry.aliases.contains(token) {
+        score += 6_000
+        tokenMatched = true
+      } else if entry.tokens.contains(token) || entry.tags.contains(token) {
+        score += 4_500
+        tokenMatched = true
+      } else if token.count >= 2
+        && (entry.label.hasPrefix(token)
+          || entry.tokens.contains(where: { $0.hasPrefix(token) })
+          || entry.tags.contains(where: { $0.hasPrefix(token) }))
+      {
+        score += 2_500
+        tokenMatched = true
+      } else if token.count >= 3
+        && (entry.label.contains(token)
+          || entry.tags.contains(where: { $0.contains(token) }))
+      {
+        score += 1_000
+        tokenMatched = true
+      }
+      if tokenMatched {
+        matchedTokenCount += 1
+      }
+    }
+
+    if queryTokens.count > 1 && matchedTokenCount > 0 {
+      if matchedTokenCount == queryTokens.count {
+        score += 18_000 * matchedTokenCount
+      } else {
+        score += 2_000 * matchedTokenCount
       }
     }
 

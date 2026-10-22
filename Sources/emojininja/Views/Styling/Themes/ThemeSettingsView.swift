@@ -256,6 +256,7 @@ struct ThemeStatusIndicator: View {
 }
 
 // MARK: - Preview
+#if canImport(PreviewsMacros)
 #Preview {
   VStack(spacing: 16) {
     ThemeSettingsView(themeManager: ThemeManager.shared)
@@ -271,3 +272,4 @@ struct ThemeStatusIndicator: View {
   .themedEnvironment(ThemeManager.shared)
   .menuBarStyle()
 }
+#endif

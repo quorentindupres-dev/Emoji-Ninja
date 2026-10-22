@@ -6,11 +6,11 @@ struct EmojiLayout {
   // MARK: - Layout Constants
 
   static let gridColumns = 8
-  static let minButtonSize: CGFloat = 58
-  static let maxButtonSize: CGFloat = 118
-  static let searchBarHeight: CGFloat = 60
-  static let categoryPillHeight: CGFloat = 32
-  static let skinToneSelectorSize: CGFloat = 45
+  static let minButtonSize: CGFloat = 52
+  static let maxButtonSize: CGFloat = 68
+  static let searchBarHeight: CGFloat = 50
+  static let categoryPillHeight: CGFloat = 28
+  static let skinToneSelectorSize: CGFloat = 34
 
   // MARK: - Button Size Calculation
 

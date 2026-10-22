@@ -72,17 +72,27 @@ class EmojiManager: ObservableObject {
     )
     .themedEnvironment(ThemeManager.shared)
 
-    pickerWindow = NSWindow(
+    let window = NSWindow(
       contentRect: NSRect(origin: .zero, size: windowSize),
-      styleMask: [.titled, .closable, .resizable],
+      styleMask: [.titled, .fullSizeContentView],
       backing: .buffered,
       defer: false
     )
 
-    pickerWindow?.title = "Emoji Ninja \(BuildVersion.display)"
-    pickerWindow?.contentView = NSHostingView(rootView: contentView)
-    pickerWindow?.level = .floating
-    pickerWindow?.isReleasedWhenClosed = false
+    window.title = "Emoji Ninja \(BuildVersion.display)"
+    window.titleVisibility = .hidden
+    window.titlebarAppearsTransparent = true
+    window.isOpaque = false
+    window.backgroundColor = .clear
+    window.hasShadow = true
+    window.isMovableByWindowBackground = true
+    window.standardWindowButton(.closeButton)?.isHidden = true
+    window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+    window.standardWindowButton(.zoomButton)?.isHidden = true
+    window.contentView = NSHostingView(rootView: contentView)
+    window.level = .floating
+    window.isReleasedWhenClosed = false
+    pickerWindow = window
 
     setupWindowObservers()
   }
@@ -96,14 +106,8 @@ class EmojiManager: ObservableObject {
   }
 
   private func calculateOptimalWindowSize(for screen: NSScreen) -> CGSize {
-    // Calculate width based on screen size
-    let screenWidth = screen.frame.width
-    let widthPercentage = screenWidth < 1800 ? 0.35 : 0.3
-    let pickerWidth = screenWidth * widthPercentage
-
-    // Set height based on 4:3 aspect ratio (width:height)
-    let pickerHeight = pickerWidth * (3.0 / 4.0)
-
+    let pickerWidth = min(max(540, screen.frame.width * 0.32), 620)
+    let pickerHeight = min(max(410, pickerWidth * 0.76), 470)
     return CGSize(width: pickerWidth, height: pickerHeight)
   }
 
@@ -241,6 +245,12 @@ class EmojiManager: ObservableObject {
         else {
           return noErr
         }
+        // Hardware Right Option check (0x40 = NX_DEVICERALTKEYMASK, 0x20 = NX_DEVICELALTKEYMASK)
+        let rawFlags = CGEventSource.flagsState(.combinedSessionState).rawValue
+        let leftOptionOnly = (rawFlags & 0x20 != 0) && (rawFlags & 0x40 == 0)
+        if leftOptionOnly {
+          return noErr
+        }
         guard let userData else { return noErr }
         let manager = Unmanaged<EmojiManager>.fromOpaque(userData).takeUnretainedValue()
         Task { @MainActor in
@@ -259,8 +269,8 @@ class EmojiManager: ObservableObject {
     }
 
     let registerStatus = RegisterEventHotKey(
-      UInt32(kVK_Space),
-      UInt32(cmdKey | controlKey),
+      UInt32(kVK_ANSI_M),
+      UInt32(optionKey),
       hotKeyID,
       GetEventDispatcherTarget(),
       0,

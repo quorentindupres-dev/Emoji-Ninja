@@ -21,7 +21,7 @@ struct SearchBar: View {
 
         ZStack(alignment: .leading) {
           if searchText.isEmpty {
-            Text("Search emojis...")
+            Text("Search emojis by meaning or multiple keywords...")
               .foregroundColor(theme.colors.text.tertiary)
               .font(theme.typography.title)
           }
@@ -94,7 +94,7 @@ struct SearchBar: View {
       }
       .searchBarStyle(isFocused: isSearchFocused)
     }
-    .frame(height: 60)
+    .frame(height: 50)
     .background(theme.colors.background)
     .onAppear {
       DispatchQueue.main.async {

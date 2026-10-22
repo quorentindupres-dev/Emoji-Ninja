@@ -65,14 +65,18 @@ struct FastEmojiButton: View {
   @ViewBuilder
   private var backgroundView: some View {
     RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
-      .fill(theme.colors.surface)
+      .fill(
+        isSelected
+          ? theme.colors.surfaceElevated
+          : (isHovered ? theme.colors.surface : Color.clear)
+      )
   }
 
   @ViewBuilder
   private var overlayView: some View {
     if isSelected || isHovered {
       RoundedRectangle(cornerRadius: theme.cornerRadius.medium)
-        .stroke(borderColor, lineWidth: 2)
+        .stroke(borderColor, lineWidth: isSelected ? 1.5 : 1)
     }
   }
 

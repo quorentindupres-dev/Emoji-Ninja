@@ -86,52 +86,124 @@ struct EmojiPickerView: View {
               }
               viewModel.consumeAutoScrollSelection()
             }
-            .onChange(of: viewModel.selectedCategory) { _, _ in
-              proxy.scrollTo("emoji_content_top", anchor: .top)
-              viewModel.onSelectedCategoryChangedFromUI()
+              .onChange(of: viewModel.selectedCategory) { _, _ in
+                proxy.scrollTo("emoji_content_top", anchor: .top)
+                viewModel.onSelectedCategoryChangedFromUI()
+              }
+            }
+
+            Divider()
+              .overlay(theme.colors.border.secondary)
+
+            // Raycast-style Multi-Keyword Meaning Footer Bar
+            EmojiFooterBar(emoji: viewModel.getCurrentEmoji())
+          }
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+              .fill(theme.colors.background)
+          )
+          .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+          .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+              .stroke(theme.colors.border.primary, lineWidth: 1)
+          )
+          .coordinateSpace(name: "emojiPicker")
+          .environmentObject(tooltipManager)
+
+          // Global tooltip overlay
+          GlobalTooltipView(tooltipManager: tooltipManager)
+        }
+      }
+      .frame(width: windowSize.width, height: windowSize.height)
+      .onKeyPress { keyPress in
+        // Handle tab navigation using actual characters
+        let character = keyPress.key.character
+
+        if character == "\u{19}" || character == "\u{9}" {  // Tab or Shift+Tab
+          if !viewModel.isInSearchMode {
+            if character == "\u{19}" {  // Shift+Tab
+              viewModel.navigateToPreviousCategory()
+            } else if character == "\u{9}" {  // Tab
+              viewModel.navigateToNextCategory()
             }
           }
+          // Always handle tab events to prevent focus changes
+          return .handled
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(theme.colors.background)
-        .coordinateSpace(name: "emojiPicker")
-        .environmentObject(tooltipManager)
-
-        // Global tooltip overlay
-        GlobalTooltipView(tooltipManager: tooltipManager)
+        return .ignored
+      }
+      .onAppear {
+        viewModel.resetSearch()
+      }
+      .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+        viewModel.resetSearch()
       }
     }
-    .frame(width: windowSize.width, height: windowSize.height)
-    .onKeyPress { keyPress in
-      // Handle tab navigation using actual characters
-      let character = keyPress.key.character
 
-      if character == "\u{19}" || character == "\u{9}" {  // Tab or Shift+Tab
-        if !viewModel.isInSearchMode {
-          if character == "\u{19}" {  // Shift+Tab
-            viewModel.navigateToPreviousCategory()
-          } else if character == "\u{9}" {  // Tab
-            viewModel.navigateToNextCategory()
+    // MARK: - Helper Functions
+
+    private func handleSubmit() {
+      if let selectedEmojiData = viewModel.selectCurrentEmojiData() {
+        onEmojiSelected(selectedEmojiData)
+      }
+    }
+  }
+
+  struct EmojiFooterBar: View {
+    let emoji: EmojibaseEmoji?
+    @Environment(\.theme) private var theme
+
+    var body: some View {
+      HStack(spacing: 8) {
+        if let emoji {
+          Text(emoji.unicode)
+            .font(.system(size: 16))
+          Text(emoji.label)
+            .font(theme.typography.caption)
+            .foregroundColor(theme.colors.text.primary)
+            .lineLimit(1)
+
+          if let tags = emoji.tags, !tags.isEmpty {
+            Text("·")
+              .font(theme.typography.caption)
+              .foregroundColor(theme.colors.text.tertiary)
+
+            HStack(spacing: 4) {
+              ForEach(Array(tags.prefix(5)), id: \.self) { tag in
+                Text(tag)
+                  .font(theme.typography.caption2)
+                  .foregroundColor(theme.colors.text.secondary)
+                  .padding(.horizontal, 6)
+                  .padding(.vertical, 2)
+                  .background(
+                    RoundedRectangle(cornerRadius: 4)
+                      .fill(theme.colors.surfaceElevated)
+                  )
+              }
+            }
+            .lineLimit(1)
           }
+        } else {
+          Text("Emoji Ninja")
+            .font(theme.typography.caption)
+            .foregroundColor(theme.colors.text.secondary)
         }
-        // Always handle tab events to prevent focus changes
-        return .handled
+
+        Spacer(minLength: 4)
+
+        HStack(spacing: 6) {
+          Text("↵ Insert")
+          Text("·")
+          Text("⇥ Tab")
+          Text("·")
+          Text("⌥M")
+        }
+        .font(theme.typography.caption2)
+        .foregroundColor(theme.colors.text.tertiary)
       }
-      return .ignored
-    }
-    .onAppear {
-      viewModel.resetSearch()
-    }
-    .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
-      viewModel.resetSearch()
+      .padding(.horizontal, 14)
+      .frame(height: 34)
+      .background(theme.colors.surface.opacity(0.6))
     }
   }
-
-  // MARK: - Helper Functions
-
-  private func handleSubmit() {
-    if let selectedEmojiData = viewModel.selectCurrentEmojiData() {
-      onEmojiSelected(selectedEmojiData)
-    }
-  }
-}

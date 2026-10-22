@@ -100,25 +100,25 @@ struct ShadowStyle {
 // MARK: - Dark Theme Implementation
 struct DarkTheme: Theme {
   let colors = ColorScheme(
-    background: Color(red: 35 / 255, green: 35 / 255, blue: 35 / 255),
-    surface: Color(red: 45 / 255, green: 45 / 255, blue: 45 / 255),
-    surfaceElevated: Color(red: 55 / 255, green: 55 / 255, blue: 55 / 255),
+    background: Color(red: 22 / 255, green: 22 / 255, blue: 26 / 255),
+    surface: Color(red: 32 / 255, green: 32 / 255, blue: 38 / 255),
+    surfaceElevated: Color(red: 44 / 255, green: 45 / 255, blue: 54 / 255),
     primary: Color.white,
-    secondary: Color(red: 180 / 255, green: 180 / 255, blue: 180 / 255),
-    accent: Color.accentColor,
+    secondary: Color(red: 165 / 255, green: 168 / 255, blue: 180 / 255),
+    accent: Color(red: 99 / 255, green: 102 / 255, blue: 241 / 255),
     text: TextColors(
-      primary: Color.white,
-      secondary: Color(red: 180 / 255, green: 180 / 255, blue: 180 / 255),
-      tertiary: Color(red: 120 / 255, green: 120 / 255, blue: 120 / 255),
-      inverse: Color.black,
-      disabled: Color(red: 80 / 255, green: 80 / 255, blue: 80 / 255)
+      primary: Color(red: 244 / 255, green: 244 / 255, blue: 246 / 255),
+      secondary: Color(red: 161 / 255, green: 161 / 255, blue: 170 / 255),
+      tertiary: Color(red: 113 / 255, green: 113 / 255, blue: 122 / 255),
+      inverse: Color.white,
+      disabled: Color(red: 82 / 255, green: 82 / 255, blue: 91 / 255)
     ),
     border: BorderColors(
-      primary: Color(red: 70 / 255, green: 70 / 255, blue: 70 / 255),
-      secondary: Color(red: 50 / 255, green: 50 / 255, blue: 50 / 255),
-      selected: Color(red: 205 / 255, green: 205 / 255, blue: 205 / 255),
-      hover: Color(red: 105 / 255, green: 105 / 255, blue: 105 / 255),
-      focus: Color.accentColor
+      primary: Color.white.opacity(0.11),
+      secondary: Color.white.opacity(0.07),
+      selected: Color(red: 129 / 255, green: 140 / 255, blue: 248 / 255),
+      hover: Color.white.opacity(0.18),
+      focus: Color(red: 99 / 255, green: 102 / 255, blue: 241 / 255)
     ),
     semantic: SemanticColors(
       success: Color(red: 52 / 255, green: 199 / 255, blue: 89 / 255),
@@ -129,18 +129,18 @@ struct DarkTheme: Theme {
   )
 
   let typography = Typography(
-    largeTitle: .system(size: 34, weight: .bold),
-    title: .system(size: 28, weight: .semibold),
-    headline: .system(size: 17, weight: .semibold),
-    subheadline: .system(size: 15, weight: .medium),
-    body: .system(size: 17, weight: .regular),
-    caption: .system(size: 12, weight: .regular),
-    caption2: .system(size: 11, weight: .regular),
+    largeTitle: .system(size: 26, weight: .bold),
+    title: .system(size: 16, weight: .medium),
+    headline: .system(size: 12, weight: .semibold),
+    subheadline: .system(size: 13, weight: .medium),
+    body: .system(size: 14, weight: .regular),
+    caption: .system(size: 11.5, weight: .medium),
+    caption2: .system(size: 10.5, weight: .medium),
     emoji: EmojiTypography(
-      small: .system(size: 16),
-      medium: .system(size: 24),
-      large: .system(size: 32),
-      extraLarge: .system(size: 48)
+      small: .system(size: 15),
+      medium: .system(size: 20),
+      large: .system(size: 28),
+      extraLarge: .system(size: 40)
     )
   )
 
@@ -215,18 +215,18 @@ struct LightTheme: Theme {
   )
 
   let typography = Typography(
-    largeTitle: .system(size: 34, weight: .bold),
-    title: .system(size: 28, weight: .semibold),
-    headline: .system(size: 17, weight: .semibold),
-    subheadline: .system(size: 15, weight: .medium),
-    body: .system(size: 17, weight: .regular),
-    caption: .system(size: 12, weight: .regular),
-    caption2: .system(size: 11, weight: .regular),
+    largeTitle: .system(size: 26, weight: .bold),
+    title: .system(size: 16, weight: .medium),
+    headline: .system(size: 12, weight: .semibold),
+    subheadline: .system(size: 13, weight: .medium),
+    body: .system(size: 14, weight: .regular),
+    caption: .system(size: 11.5, weight: .medium),
+    caption2: .system(size: 10.5, weight: .medium),
     emoji: EmojiTypography(
-      small: .system(size: 16),
-      medium: .system(size: 24),
-      large: .system(size: 32),
-      extraLarge: .system(size: 48)
+      small: .system(size: 15),
+      medium: .system(size: 20),
+      large: .system(size: 28),
+      extraLarge: .system(size: 40)
     )
   )
 

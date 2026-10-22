@@ -54,24 +54,27 @@ struct CategoryPillStyle: ButtonStyle {
 
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
-      .font(.title2)
-      .padding(.horizontal, theme.spacing.small)
-      .padding(.vertical, theme.spacing.small)
+      .padding(.horizontal, isSelected ? 10 : 8)
+      .padding(.vertical, 5)
       .background(
-        RoundedRectangle(cornerRadius: theme.cornerRadius.pill)
+        RoundedRectangle(cornerRadius: 8)
           .fill(backgroundColor)
       )
+      .overlay(
+        RoundedRectangle(cornerRadius: 8)
+          .stroke(isSelected ? theme.colors.border.selected.opacity(0.6) : theme.colors.border.secondary, lineWidth: 1)
+      )
       .foregroundColor(textColor)
-      .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-      .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+      .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+      .animation(.easeInOut(duration: 0.12), value: configuration.isPressed)
   }
 
   private var backgroundColor: Color {
-    isSelected ? theme.colors.accent : theme.colors.surface
+    isSelected ? theme.colors.surfaceElevated : theme.colors.surface.opacity(0.5)
   }
 
   private var textColor: Color {
-    isSelected ? theme.colors.text.inverse : theme.colors.text.primary
+    isSelected ? theme.colors.text.primary : theme.colors.text.secondary
   }
 }
 
@@ -85,7 +88,7 @@ struct SearchBarStyle: ViewModifier {
       .font(theme.typography.title)
       .foregroundColor(theme.colors.text.primary)
       .frame(maxWidth: .infinity)
-      .frame(height: 60)
+      .frame(height: 50)
   }
 }
 
@@ -95,18 +98,17 @@ struct SkinToneSelectorStyle: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .font(theme.typography.emoji.medium)
-      .frame(width: 45, height: 45)
+      .font(theme.typography.emoji.small)
+      .frame(width: 32, height: 32)
       .background(
-        RoundedRectangle(cornerRadius: theme.cornerRadius.large)
+        RoundedRectangle(cornerRadius: 8)
           .fill(theme.colors.surfaceElevated)
           .overlay(
-            RoundedRectangle(cornerRadius: theme.cornerRadius.large)
+            RoundedRectangle(cornerRadius: 8)
               .stroke(theme.colors.border.primary, lineWidth: 1)
           )
       )
       .contentShape(Rectangle())
-      .themedShadow(.small)
   }
 }
 

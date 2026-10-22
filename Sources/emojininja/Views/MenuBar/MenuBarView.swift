@@ -21,7 +21,7 @@ struct MenuBarView: View {
     Button("Show Emoji Picker") {
       viewModel.showEmojiPicker()
     }
-    .keyboardShortcut(.space, modifiers: [.command, .control])
+    .keyboardShortcut("m", modifiers: [.option])
     .onAppear {
       // Check if we should show the first launch dialog
       viewModel.checkAndShowFirstLaunchDialog()
@@ -90,6 +90,7 @@ struct MenuBarView: View {
   }
 }
 
+#if canImport(PreviewsMacros)
 #Preview {
   MenuBarView(
     appState: AppState(),
@@ -98,3 +99,4 @@ struct MenuBarView: View {
   )
   .themedEnvironment(ThemeManager.shared)
 }
+#endif
